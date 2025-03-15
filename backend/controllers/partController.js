@@ -1,4 +1,7 @@
 import Part from "../models/Part.js";
+import Truck from "../models/Truck.js";
+import Maintenance from "../models/Maintenance.js";
+
 
 // Add Part Entry
 export const addPart = async (req, res) => {

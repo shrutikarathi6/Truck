@@ -3,9 +3,9 @@
 import mongoose from "mongoose";
 
 const truckSchema = new mongoose.Schema({
-    truckNo: { type: String, required: true, unique: true },
-    odoReading: { type: Number, required: true },
-    lastUpdated: { type: Date, required: true }
+    truckNo: { type: String, unique: true },
+    odoReading: { type: Number },
+    lastUpdated: { type: Date}
 })
 
 const Truck= mongoose.model("Truck", truckSchema);

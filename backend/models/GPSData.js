@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const gpsDataSchema = new mongoose.Schema({
-    truckNo: { type: String, required: true },
-    date: { type: Date, required: true },
-    kmTravelled: { type: Number, required: true }
+    truckNo: { type: String },
+    date: { type: Date },
+    kmTravelled: { type: Number }
 });
 
 gpsDataSchema.index({ truckNo: 1, date: 1 }, { unique: true });

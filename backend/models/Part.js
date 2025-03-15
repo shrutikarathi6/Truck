@@ -3,12 +3,12 @@
 import mongoose from "mongoose";
 
 const partSchema = new mongoose.Schema({
-    partNo: { type: String, required: true, unique: true },
-    type: { type: String, required: true },
-    purchaseDate: { type: Date, required: true },
+    partNo: { type: String, unique: true },
+    type: { type: String },
+    purchaseDate: { type: Date },
     vehicleDetails: { 
         type: String, 
-        required: true,
+        
         validate: {
             validator: function(value) {
                 return value === "Stock" || value === "Scrap" || /^[A-Za-z0-9]+$/.test(value); 
