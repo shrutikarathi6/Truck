@@ -1,26 +1,40 @@
 import Maintenance from "../models/Maintenance.js";
 import Warranty from "../models/Warranty.js";
 import GPS from "../models/GPSData.js";
+import Truck from "../models/Truck.js"
 
 // Add Maintenance Entry
 export const addMaintenance = async (req, res) => {
-    const { truckNo, category, subcategory, installationDate, odoKM, warrantyType, warrantyValue } = req.body;
-
+    const { truckNo, category, subcategory, installationDate,initialodoreading, odoReading, warrantyPeriod, warrantyType } = req.body;
+    const uniqueId = `${truckNo}_${installationDate}_${category}`;
     try {
         const newMaintenance = new Maintenance({
             truckNo,
             category,
             subcategory,
             installationDate,
-            odoKM
+            initialodoreading,
+            odoReading,
+            warrantyPeriod,
+            warrantyType,
+            uniqueId
+
         });
         await newMaintenance.save();
+        
 
-        const uniqueId = `${truckNo}_${installationDate}_${category}`;
+        if (warrantyType === "Time") {
+            expiry = new Date(installationDate);
+            expiry.setDate(expiry.getDate() + (warrantyPeriod * 365));  // ✅ Fix: Correct calculation
+        } else if (warrantyType === "KM") {
+            expiry = warrantyPeriod;  // ✅ Fix: Use correct variable
+        }
+        
+
         const newWarranty = new Warranty({
             uniqueId,
             warrantyType, // 'km' or 'time'
-            warrantyValue
+            expiry
         });
         await newWarranty.save();
 
@@ -30,17 +44,7 @@ export const addMaintenance = async (req, res) => {
     }
 };
 
-// Get Maintenance History for a Truck
-export const getMaintenanceHistory = async (req, res) => {
-    const { truckNo } = req.params;
 
-    try {
-        const maintenanceHistory = await Maintenance.find({ truckNo });
-        res.status(200).json(maintenanceHistory);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
 
 // Get Notifications
 export const getNotifications = async (req, res) => {
@@ -51,19 +55,22 @@ export const getNotifications = async (req, res) => {
         const notifications = [];
 
         for (const warranty of warranties) {
-            const { uniqueId, warrantyType, warrantyValue } = warranty;
-            const [truckNo, installationDate] = uniqueId.split('_');
-            const gpsEntries = await GPS.find({ truckNo });
+            const { uniqueId, warrantyType, expiry } = warranty;
+            const maintenance = await Maintenance.findOne({ uniqueId });  // ✅ Fix: Correct query
+            if (!maintenance) return res.status(404).json({ message: "Maintenance record not found." });
+
+            const { installationDate, truckNo, initialodoreading } = maintenance;
+            const truck = await Truck.findOne({ truckNo });  // ✅ Fix: Correct query
+            if (!truck) return res.status(404).json({ message: "Truck not found." });
+
+            const odoreading = truck.odoReading;
+
 
             let totalKM = 0;
-            gpsEntries.forEach(entry => {
-                if (new Date(entry.date) >= new Date(installationDate)) {
-                    totalKM += entry.km;
-                }
-            });
+            totalKM = odoreading-initialodoreading;
 
-            if ((warrantyType === 'km' && totalKM >= warrantyValue) ||
-                (warrantyType === 'time' && new Date(installationDate).setDate(new Date(installationDate).getDate() + warrantyValue) <= new Date(today))) {
+            if ((warrantyType === 'km' && totalKM >= expiry) ||
+                (warrantyType === 'time' && expiry===today)) {
                 notifications.push({ truckNo, message: `Warranty period expired for category installed on ${installationDate}` });
             }
         }

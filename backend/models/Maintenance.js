@@ -7,6 +7,7 @@ const maintenanceSchema = new mongoose.Schema({
     category: { type: String, required: true },
     subCategory: { type: String, required: true },
     installationDate: { type: Date, required: true },
+    initialodoreading: { type: Number, required: true },
     odoReading: { type: Number, required: true },
     warrantyPeriod: { type: Number, required: true }, // in days or kilometers
     warrantyType: { type: String, enum: ["Time", "KM"], required: true },

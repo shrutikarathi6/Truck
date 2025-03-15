@@ -1,24 +1,25 @@
 import GPS from '../models/GPSData.js';
 import Truck from '../models/Truck.js';
+import Maintenance from "../models/Maintenance.js"
 
 // Add GPS Entry
 export const addGPSData = async (req, res) => {
-    const { truckNumber, date, kmTravelled } = req.body;
+    const { truckNo, date, kmTravelled } = req.body;
 
     try {
-        const truck = await Truck.findOne({ truckNumber });
+        const truck = await Truck.findOne({ truckNo });
         if (!truck) return res.status(404).json({ message: 'Truck not found' });
 
-        const newOdometer = truck.odo + kmTravelled;
+        const newOdometer = truck.odoReading + kmTravelled;
         
         const newGPS = new GPS({
-            truckNumber,
+            truckNo,
             date,
             kmTravelled
         });
 
         await newGPS.save();
-        truck.odo = newOdometer;
+        truck.odoReading = newOdometer;
         await truck.save();
 
         res.status(201).json({ message: 'GPS Data Added', newOdometer });
@@ -29,11 +30,11 @@ export const addGPSData = async (req, res) => {
 
 // Get Truck History
 export const getTruckHistory = async (req, res) => {
-    const { truckNumber } = req.params;
+    const { truckNo } = req.params;
 
     try {
-        const history = await GPS.find({ truckNumber }).sort({ date: 1 });
-        const maintenanceHistory = await Maintenance.find({ truckNumber });
+        const history = await GPS.find({ truckNo }).sort({ date: 1 });
+        const maintenanceHistory = await Maintenance.find({ truckNo });
 
         res.status(200).json({
             gpsHistory: history,
