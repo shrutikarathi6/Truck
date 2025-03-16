@@ -3,7 +3,7 @@
 import mongoose from "mongoose";
 
 const truckSchema = new mongoose.Schema({
-    truckNo: { type: String, unique: true },
+    truckNo: { type: String},
     odoReading: { type: Number },
     lastUpdated: { type: Date}
 })

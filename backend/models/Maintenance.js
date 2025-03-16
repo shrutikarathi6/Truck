@@ -11,7 +11,8 @@ const maintenanceSchema = new mongoose.Schema({
     odoReading: { type: Number },
     warrantyPeriod: { type: Number}, // in days or kilometers
     warrantyType: { type: String, enum: ["Time", "KM"] },
-    uniqueId: { type: String, unique: true } // truckNo + date + category
+    uniqueId: { type: String, unique: true },
+    expiry: { type: mongoose.Schema.Types.Mixed, required: true } // truckNo + date + category
 });
 
 const Maintenance= mongoose.model("Maintenance", maintenanceSchema);
