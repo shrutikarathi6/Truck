@@ -7,7 +7,7 @@ export const addGPSData = async (req, res) => {
     const { truckNo, date, kmTravelled } = req.body;
 
     try {
-        const truck = await Truck.find({ truckNo });
+        const truck = await Truck.findOne({ truckNo });
 
         
 

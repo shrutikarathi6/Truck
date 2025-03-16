@@ -70,14 +70,16 @@ export const getNotifications = async (req, res) => {
             // const maintenance = await Maintenance.findOne({ uniqueId });  // ✅ Fix: Correct query
             // if (!maintenance) return res.status(404).json({ message: "Maintenance record not found." });
 
-            const { installationDate, truckNo,warrantyType,odoReading,expiry } = warranty;
-          
+            const { installationDate, truckNo,warrantyType,expiry } = warranty;
+            const truck = await Truck.findOne({ truckNo });  // ✅ Fix: Correct query
+            if (!truck) return res.status(404).json({ message: "Truck not found." });
 
-            let totalKM = 0;
-            totalKM = odoReading;
+            const odoReading = truck.odoReading;
+            console.log(odoReading,expiry)
 
-            if ((warrantyType === 'km' && totalKM >= expiry) ||
-                (warrantyType === 'time' && expiry===today)) {
+            if ((warrantyType === 'KM' && odoReading >= expiry) ||
+                (warrantyType === 'Time' && expiry===today)) {
+                    console.log(truckNo)
                 notifications.push({ truckNo, message: `Warranty period expired for category installed on ${installationDate}` });
             }
         }
