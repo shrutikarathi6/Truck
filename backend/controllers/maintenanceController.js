@@ -70,15 +70,11 @@ export const getNotifications = async (req, res) => {
             // const maintenance = await Maintenance.findOne({ uniqueId });  // ✅ Fix: Correct query
             // if (!maintenance) return res.status(404).json({ message: "Maintenance record not found." });
 
-            const { installationDate, truckNo,warrantyType, initialodoreading,expiry } = warranty;
-            const truck = await Truck.findOne({ truckNo });  // ✅ Fix: Correct query
-            if (!truck) return res.status(404).json({ message: "Truck not found." });
-
-            const odoreading = truck.odoReading;
-
+            const { installationDate, truckNo,warrantyType,odoReading,expiry } = warranty;
+          
 
             let totalKM = 0;
-            totalKM = odoreading-initialodoreading;
+            totalKM = odoReading;
 
             if ((warrantyType === 'km' && totalKM >= expiry) ||
                 (warrantyType === 'time' && expiry===today)) {

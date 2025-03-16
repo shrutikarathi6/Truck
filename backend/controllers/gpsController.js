@@ -7,7 +7,7 @@ export const addGPSData = async (req, res) => {
     const { truckNo, date, kmTravelled } = req.body;
 
     try {
-        let truck = await Truck.findOne({ truckNo });
+        const truck = await Truck.find({ truckNo });
 
         
 
@@ -15,24 +15,21 @@ export const addGPSData = async (req, res) => {
         if (!truck) {
             return res.status(400).json({ error: "Truck number is not found required" });
         }
-
-        // ✅ Ensure odoReading is set (default to 0)
+        
         truck.odoReading = truck.odoReading || 0;
-
         const newOdometer = truck.odoReading + kmTravelled;
-
-        console.log(truckNo,date,kmTravelled)
-
-        // const newGPS = new GPS({
-        //     truckNo,
-        //     date,
-        //     kmTravelled
-        // });
-
-        // await newGPS.save();
         truck.odoReading = newOdometer;
+        truck.lastUpdated =date;
         await truck.save();
 
+        const newGps=new GPS({
+            truckNo,
+            date,
+            kmTravelled
+        });
+
+        await newGps.save();
+        
         res.status(201).json({ message: 'GPS Data Added', newOdometer });
     } catch (error) {
         res.status(500).json({ error: error.message });

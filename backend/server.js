@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import gpsRoutes from './routes/gpsRoutes.js';
 import maintenanceRoutes from './routes/maintenanceRoutes.js';
 import partRoutes from './routes/partRoutes.js';
+import truckRoutes from "./routes/truckRoutes.js"
 
 dotenv.config();
 connectDB();
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use('/api/gps', gpsRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/parts', partRoutes);
+app.use('/api/truck', truckRoutes);
 
 // ✅ Error Handling Middleware
 app.use((err, req, res, next) => {
