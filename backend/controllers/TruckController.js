@@ -5,6 +5,11 @@ export const addTruck = async (req, res) => {
     const { truckNo, odoReading } = req.body;
 
     try {
+
+        if (!truckNo || truckNo.trim() === "") {
+            return res.status(400).json({ error: "Truck number is required" });
+        }
+        
         // Check if truck already exists
         const existingTruck = await Truck.findOne({ truckNo });
         if (existingTruck) {

@@ -8,9 +8,6 @@ const router = express.Router();
 
 // Add Maintenance Entry
 router.post("/add", addMaintenance);
-
-
-
 // Get Notifications
 router.get("/notifications", getNotifications);
 

@@ -6,6 +6,7 @@ import AddTruck from "./components/AddTruck.jsx";
 import GpsKm from "./components/GPSKM.jsx";
 import Maintenance from "./components/Maintenance.jsx";
 import Part from "./components/Part.jsx";
+import Notification from "./components/Notification.jsx"
 
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/gps-km" element={<GpsKm />} />
         <Route path="/maintenance" element={<Maintenance />} />
         <Route path="/part" element={<Part />} />
+        <Route path="/notification" element={<Notification />} />
       </Routes>
     </Router>
   );

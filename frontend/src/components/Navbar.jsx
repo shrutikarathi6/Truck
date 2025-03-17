@@ -24,6 +24,10 @@ const Navbar = () => {
           <Package size={22} />
           Add Part
         </Link>
+        <Link to="/notification" className={`nav-btn ${location.pathname === "/notification" ? "active" : ""}`}>
+          <Settings size={22} />
+          Notification
+        </Link>
       </div>
       <div className="nav-right">Truck Management</div>
     </nav>

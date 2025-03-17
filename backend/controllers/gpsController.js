@@ -9,17 +9,14 @@ export const addGPSData = async (req, res) => {
     try {
         const truck = await Truck.findOne({ truckNo });
 
-        
-
-        // ✅ If truck doesn't exist, create a new one with odoReading = 0
         if (!truck) {
             return res.status(400).json({ error: "Truck number is not found required" });
         }
         
-        truck.odoReading = truck.odoReading || 0;
-        const newOdometer = truck.odoReading + kmTravelled;
-        truck.odoReading = newOdometer;
-        truck.lastUpdated =date;
+        truck.odoReading = Number(truck.odoReading);
+        truck.odoReading += Number(kmTravelled);
+        truck.lastUpdated = date;
+        const newOdometer=truck.odoReading;
         await truck.save();
 
         const newGps=new GPS({
@@ -42,11 +39,11 @@ export const getTruckHistory = async (req, res) => {
 
     try {
         const history = await GPS.find({ truckNo }).sort({ date: 1 });
-        const maintenanceHistory = await Maintenance.find({ truckNo });
+        const maintenance = await Maintenance.find({ truckNo }).sort({date:1});
 
         res.status(200).json({
             gpsHistory: history,
-            maintenanceHistory
+            maintenanceHistory:maintenance
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
